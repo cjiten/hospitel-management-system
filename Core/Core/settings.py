@@ -29,7 +29,11 @@ SECRET_KEY = 'django-insecure-r00sn__%)f9jbm!!ku-#-iwkh)bix()(1hbggzv&(q2j-d5)^y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["pma.maggicflex.com"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://pma.maggicflex.com"
+]
 
 
 # Application definition
