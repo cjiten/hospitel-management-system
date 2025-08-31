@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: django_app_college_project
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn Core.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - ./Core:/app/
+    ports:
+      - "8000:8000"
+    restart: always

@@ -15,6 +15,10 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -23,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r00sn__%)f9jbm!!ku-#-iwkh)bix()(1hbggzv&(q2j-d5)^y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -134,3 +138,41 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from google.oauth2 import service_account
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    "mftts.json"
+
+)
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "project_id": os.getenv('GCS_project_id'),           # Your Google Cloud project ID
+            "bucket_name": os.getenv('GCS_bucket_name'),               # Your GCS bucket name
+            "credentials": GS_CREDENTIALS, # Path to service account key file
+            "default_acl": "publicRead",                     # Access control: publicRead, private, etc.
+            "file_overwrite": False,                         # Prevent overwriting existing files
+            "gzip": False,                                   # Enable gzip compression
+            "location": "media",                            # Optional: prefix for file paths
+            # "expiration": 86400,                            # Cache expiration in seconds (24 hours)
+            "custom_endpoint": None,                        # Optional: custom domain if needed
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "project_id": os.getenv('GCS_project_id'),           # Your Google Cloud project ID
+            "bucket_name": os.getenv('GCS_bucket_name'),               # Your GCS bucket name
+            "credentials": GS_CREDENTIALS, # Path to service account key file
+            "default_acl": "publicRead",                     # Access control: publicRead, private, etc.
+            "file_overwrite": True,                         # Prevent overwriting existing files
+            "gzip": False,                                   # Enable gzip compression
+            "location": "static",                            # Optional: prefix for file paths
+            # "expiration": 86400,                            # Cache expiration in seconds (24 hours)
+            "custom_endpoint": None,                        # Optional: custom domain if needed
+        },
+    }
+}
